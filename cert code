@@ -1,0 +1,47 @@
+sudo useradd -m jane
+sudo useradd -m jack
+sudo passwd jane
+sudo passwd jack
+sudo mkdir /opt/common_repo
+sudo groupadd developers
+sudo usermod -aG developers jane
+sudo usermod -aG developers jack
+sudo chown -R root:developers /opt/common_repo
+sudo chmod -R 775 /opt/common_repo
+ssh user@remote-server-ip
+sudo apt-get update
+sudo apt-get install git
+sudo nano /usr/local/bin/cleanup_tmp.sh
+#!/bin/bash
+find /tmp -type f -empty -delete
+find /tmp -type d -empty -delete
+sudo chmod +x /usr/local/bin/cleanup_tmp.sh
+sudo crontab -e
+0 0 * * * /usr/local/bin/cleanup_tmp.sh
+0 6 * * 2 sudo apt-get update && sudo apt-get upgrade -y
+sudo nano /usr/local/bin/system_monitor.sh
+#!/bin/bash
+echo "CPU Load:"
+uptime
+echo "Memory Usage:"
+free -h
+echo "Disk Usage:"
+df -h
+echo "Network Usage:"
+ifstat
+echo "Active Logged-In Users:"
+who
+sudo chmod +x /usr/local/bin/system_monitor.sh
+cd /opt/common_repo
+git init
+git add system_monitor.sh
+git commit -m "Add system monitoring script"
+git remote add origin https://github.com/yourusername/repository.git
+git push -u origin master
+ssh user@remote-server-ip 'bash -s' < /usr/local/bin/system_monitor.sh
+scp user@remote-server-ip:/path/to/remote/file /local/destination
+sudo nano /etc/hosts
+127.0.0.1 youtube.com
+127.0.0.1 www.youtube.com
+sudo iptables -A OUTPUT -p tcp -d youtube.com -j DROP
+sudo iptables -A OUTPUT -p tcp -d www.youtube.com -j DROP
